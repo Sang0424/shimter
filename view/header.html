@@ -1,0 +1,40 @@
+<header id="header">
+  <div id="Logo">
+    <a href="/">
+      <h1 style="display: none">쉼터</h1>
+      <img src="../img/Logo.png" />
+    </a>
+  </div>
+  <div id="search_box">
+    <input type="search" placeholder="검색어를 입력하세요" />
+    <button><i class="fas fa-regular fa-magnifying-glass"></i></button>
+  </div>
+  {% if user %}
+  <div id="LoggedIn">
+    <a href="/profile"><div id="userInfo">{{user.nick}}</div></a>
+    <a href="/auth/logout">로그아웃</a>
+  </div>
+  {% else %}
+  <div id="Login">
+    <form action="/auth/login" method="post">
+      <input type="email" placeholder="이메일" name="email" />
+      <input type="password" placeholder="비밀번호" name="password" />
+      <button type="submit" id="login_btn">로그인</button>
+    </form>
+    <div id="login_plus">
+      <a href="#"><span class="login_plus">아이디/비밀번호 찾기</span></a>
+      <a href="/signup"><span class="login_plus">회원가입</span></a>
+    </div>
+  </div>
+  {% endif %}
+</header>
+<nav>
+  <ul>
+    <li><a href="#">전체</a></li>
+    <li><a href="#">휴식</a></li>
+    <li><a href="#">힐링</a></li>
+    <li><a href="#">웃음</a></li>
+    <li><a href="#">여유</a></li>
+  </ul>
+</nav>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>

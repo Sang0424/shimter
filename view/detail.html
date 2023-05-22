@@ -14,6 +14,56 @@
   <img src="{{formatted.img}}" alt="content_image" class="contentImage" />
   {% endif %}
   <p class="content">{{formatted.content}}</p>
+  <svg
+    class="good"
+    width="40"
+    height="40"
+    viewBox="0 0 648 612"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="648" height="612" fill="white" />
+    <circle
+      cx="324"
+      cy="306"
+      r="276.5"
+      fill="white"
+      stroke="black"
+      stroke-width="5"
+    />
+    <circle cx="180" cy="239" r="37" fill="black" />
+    <circle cx="468" cy="239" r="37" fill="black" />
+    <path
+      d="M488 392C488 433.974 403.529 504 324 504C244.471 504 176 433.974 176 392C176 350.026 244.471 368 324 368C403.529 368 488 350.027 488 392Z"
+      fill="black"
+    />
+  </svg>
+  <p>28</p>
+  <svg
+    class="bad"
+    width="40"
+    height="40"
+    viewBox="0 0 648 612"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="648" height="612" fill="white" />
+    <circle
+      cx="324"
+      cy="306"
+      r="276.5"
+      fill="white"
+      stroke="black"
+      stroke-width="5"
+    />
+    <circle cx="180" cy="239" r="37" fill="black" />
+    <circle cx="468" cy="239" r="37" fill="black" />
+    <path
+      d="M176 476.175C176 434.201 260.471 364.175 340 364.175C419.529 364.175 488 434.201 488 476.175C488 518.148 419.529 500.175 340 500.175C260.471 500.175 176 518.148 176 476.175Z"
+      fill="black"
+    />
+  </svg>
+  <p>3</p>
   <div class="commentAlarm">
     <svg
       class="comment_icon"
@@ -28,24 +78,27 @@
         fill="#676565"
       />
     </svg>
-    <p>29 comments</p>
+    <p>{{amount}} comments</p>
   </div>
 </div>
+{% if user %}
 <div id="postComment">
   <p style="font-size: 18px; font-weight: bold">댓글 작성</p>
-  <form>
+  <form action="/comment" method="post">
+    <input type="hidden" id="url" name="url" value="" />
     <textarea name="comment" placeholder="댓글을 작성해주세요"></textarea>
     <button type="submit" id="submit">작성하기</button>
   </form>
 </div>
+{% endif %} {% for comment in comments %}
 <div class="comments">
   <div class="commenter">
     <div class="circle">
       <img src="https://img.icons8.com/ios-glyphs/30/null/user--v1.png" />
     </div>
-    <div class="userName">{{commenter}}</div>
+    <div class="userName">{{comment.UserId}} {{comment.createdAt}}</div>
   </div>
-  <p class="comment">{{comment}}</p>
+  <p class="comment">{{comment.comment}}</p>
   <div class="commentPlus">
     <svg
       class="good"
@@ -115,15 +168,9 @@
     </div>
   </div>
 </div>
+{% endfor %}
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-  document.getElementById("submit").addEventListener("click", async (e) => {
-    e.preventDefault();
-    axios.get("/comment").then((res) => {
-      const commenter = res.data.UserId;
-      const comment = res.data.comment;
-      const commentDate = res.data.createdAt;
-    });
-  });
+  document.getElementById("url").value = window.location.href;
 </script>
 {% endblock %}

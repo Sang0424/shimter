@@ -13,6 +13,7 @@ dotenv.config();
 import { router as postRouter } from "./routes/post.js";
 import { router as pageRouter } from "./routes/page.js";
 import { router as authRouter } from "./routes/auth.js";
+import { router as commentRouter } from "./routes/comment.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -56,6 +57,7 @@ app.use(passport.session());
 app.use("/post", postRouter);
 app.use("/", pageRouter);
 app.use("/auth", authRouter);
+app.use("/comment", commentRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);

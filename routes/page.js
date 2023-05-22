@@ -16,10 +16,15 @@ router.use((req, res, next) => {
 router.get("/", async (req, res, next) => {
   try {
     const posts = await Post.findAll({
-      include: {
-        model: User,
-        attributes: ["id", "nick"],
-      },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nick"],
+        },
+        {
+          model: Comment,
+        },
+      ],
     });
     function formatDate(date) {
       const d = new Date(date);
@@ -38,6 +43,7 @@ router.get("/", async (req, res, next) => {
     const formatted = posts.map((post) => {
       const formatPost = { ...post.dataValues };
       formatPost.createdAt = formatDate(post.createdAt);
+      formatPost.commentCount = post.Comments.length;
       return formatPost;
     });
     res.render("index", { formatted });
@@ -50,10 +56,7 @@ router.get("/detail/:postId", async (req, res, next) => {
   try {
     const post = await Post.findOne({
       where: { id: req.params.postId },
-      include: [
-        { model: User, attributes: ["id", "nick"] },
-        { model: Comment, attributes: ["comment"] },
-      ],
+      include: [{ model: User, attributes: ["id", "nick"] }],
     });
     if (!post) {
       return res.status(404).send("존재하지 않는 게시글입니다");
@@ -73,10 +76,19 @@ router.get("/detail/:postId", async (req, res, next) => {
       return format(d, "PPP EEE p", { locale: ko }); // 날짜 포맷
     }
     const formatted = {
-      ...post,
+      ...post.dataValues,
       createdAt: formatDate(post.createdAt),
     };
-    res.render("detail", { formatted });
+    const comments = await Comment.findAll({
+      where: { PostId: req.params.postId },
+    });
+    comments.forEach((comment) => {
+      comment.dataValues.createdAt = formatDate(comment.dataValues.createdAt);
+    });
+    const amount = await Comment.count({
+      where: { PostId: req.params.postId },
+    });
+    res.render("detail", { formatted, comments, amount });
   } catch (err) {
     next(err);
   }

@@ -8,7 +8,7 @@
   {% endif %}
   <div id="container">
     {% for post in formatted %}
-    <a href="/detail/{{post.id}}">
+    <a href="/detail/{{post.id}}" style="width: 600px">
       <div class="contents">
         <div class="userInfo">
           <div class="circle">
@@ -22,21 +22,73 @@
         <img src="{{post.img}}" alt="content_image" class="contentImage" />
         {% endif %}
         <p class="content">{{post.content}}</p>
-        <div class="comment">
+        <div class="likesDislikes">
           <svg
-            class="comment_icon"
-            width="64"
-            height="105"
-            viewBox="0 0 128 105"
+            class="likes"
+            width="40"
+            height="40"
+            viewBox="0 0 648 612"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
+            <rect width="648" height="612" fill="white" />
+            <circle
+              cx="324"
+              cy="306"
+              r="276.5"
+              fill="white"
+              stroke="black"
+              stroke-width="5"
+            />
+            <circle cx="180" cy="239" r="37" fill="black" />
+            <circle cx="468" cy="239" r="37" fill="black" />
             <path
-              d="M25.6 63H102.4V52.5H25.6V63ZM25.6 47.25H102.4V36.75H25.6V47.25ZM25.6 31.5H102.4V21H25.6V31.5ZM128 105L102.4 84H12.8C9.28001 84 6.26561 82.971 3.75681 80.913C1.24801 78.855 -0.0042558 76.384 1.08659e-05 73.5V10.5C1.08659e-05 7.61251 1.25441 5.13976 3.76321 3.08176C6.27201 1.02376 9.28428 -0.00349109 12.8 8.91342e-06H115.2C118.72 8.91342e-06 121.734 1.02901 124.243 3.08701C126.752 5.14501 128.004 7.61601 128 10.5V105ZM12.8 10.5V73.5H107.68L115.2 79.6687V10.5H12.8Z"
-              fill="#676565"
+              d="M488 392C488 433.974 403.529 504 324 504C244.471 504 176 433.974 176 392C176 350.026 244.471 368 324 368C403.529 368 488 350.027 488 392Z"
+              fill="black"
             />
           </svg>
-          <p>29 comments</p>
+          <p>28</p>
+          <svg
+            class="dislikes"
+            width="40"
+            height="40"
+            viewBox="0 0 648 612"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="648" height="612" fill="white" />
+            <circle
+              cx="324"
+              cy="306"
+              r="276.5"
+              fill="white"
+              stroke="black"
+              stroke-width="5"
+            />
+            <circle cx="180" cy="239" r="37" fill="black" />
+            <circle cx="468" cy="239" r="37" fill="black" />
+            <path
+              d="M176 476.175C176 434.201 260.471 364.175 340 364.175C419.529 364.175 488 434.201 488 476.175C488 518.148 419.529 500.175 340 500.175C260.471 500.175 176 518.148 176 476.175Z"
+              fill="black"
+            />
+          </svg>
+          <p>3</p>
+          <div class="comment">
+            <svg
+              class="comment_icon"
+              width="64"
+              height="105"
+              viewBox="0 0 128 105"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M25.6 63H102.4V52.5H25.6V63ZM25.6 47.25H102.4V36.75H25.6V47.25ZM25.6 31.5H102.4V21H25.6V31.5ZM128 105L102.4 84H12.8C9.28001 84 6.26561 82.971 3.75681 80.913C1.24801 78.855 -0.0042558 76.384 1.08659e-05 73.5V10.5C1.08659e-05 7.61251 1.25441 5.13976 3.76321 3.08176C6.27201 1.02376 9.28428 -0.00349109 12.8 8.91342e-06H115.2C118.72 8.91342e-06 121.734 1.02901 124.243 3.08701C126.752 5.14501 128.004 7.61601 128 10.5V105ZM12.8 10.5V73.5H107.68L115.2 79.6687V10.5H12.8Z"
+                fill="#676565"
+              />
+            </svg>
+            <p>{{post.commentCount}} comments</p>
+          </div>
         </div>
       </div>
     </a>
@@ -54,6 +106,9 @@
   }
   document.getElementById("writeForm").addEventListener("click", function () {
     window.location.href = "/post";
+  });
+  document.querySelector(".likes").addEventListener("click", async function () {
+    await axios.put("/post/likes").then((res) => {});
   });
 </script>
 {% endblock %}

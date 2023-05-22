@@ -38,7 +38,7 @@ class User extends Sequelize.Model {
   }
   static associate() {
     User.hasMany(Post);
-    User.hasMany(Comment, { foreignKey: "user_id", sourceKey: "id" });
+    User.hasMany(Comment);
   }
 }
 

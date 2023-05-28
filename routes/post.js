@@ -51,5 +51,23 @@ router.post("/", upload.single("img"), async (req, res, next) => {
     next(error);
   }
 });
-
+router.put("/likes", async (req, res) => {
+  const { postId } = req.body;
+  await Post.increment("likes", { by: 1, where: { id: postId } });
+  const likeCount = await Post.findOne({
+    where: { id: postId },
+  });
+  res.json({ likeCount: likeCount });
+});
+router.put("/dislikes", async (req, res) => {
+  const { postId } = req.body;
+  await Post.increment("dislikes", {
+    by: 1,
+    where: { id: postId },
+  });
+  const dislikeCount = await Post.findOne({
+    where: { id: postId },
+  });
+  res.json({ dislikeCount: dislikeCount });
+});
 export { router };

@@ -21,10 +21,12 @@ class Post extends Sequelize.Model {
         likes: {
           type: Sequelize.INTEGER(),
           allowNull: true,
+          defaultValue: 0,
         },
         dislikes: {
           type: Sequelize.INTEGER(),
           allowNull: true,
+          defaultValue: 0,
         },
       },
       {

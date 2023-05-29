@@ -1,18 +1,18 @@
 {% extends 'layout.html' %} {% block styles %}
-<link rel="stylesheet" href="userInfo.css" />
+<link rel="stylesheet" href="profile.css" />
 {% endblock %} {% block content%}
 <div id="myContent">
   <p>내가 쓴 글</p>
-  {% if not posts.id %}
+  {% if not userInfo.Posts %}
     <div id="noContent">작성한 글이 없습니다</div>
   {% else %}
-    {% for post in posts %}
+    {% for post in userInfo.Posts %}
     <div class="userContents">
       <div class="userInfo">
         <div class="circle">
           <img src="https://img.icons8.com/ios-glyphs/30/null/user--v1.png" />
         </div>
-        <div class="userName">{{post.User.nick}}</div>
+        <div class="userName">{{userInfo.nick}}</div>
       </div>
       <p class="postName">{{post.title}}</p>
       {% if post.img %}
@@ -37,7 +37,7 @@
             fill="#676565"
           />
         </svg>
-        <p>29 comments</p>
+        <p>{{post.Comments.length}}</p>
       </div>
     </div>
     {% endfor %}
@@ -45,23 +45,27 @@
 </div>
 <div id="myComment">
   <p>내가 댓글 단 글</p>
+  {% if not userInfo.Comments %}
+    <div id="noContent">작성한 댓글이 없습니다</div>
+  {% else %}
+  {% for post in userInfo.Comments %}
   <div class="userContents">
     <div class="userInfo">
       <div class="circle">
         <img src="https://img.icons8.com/ios-glyphs/30/null/user--v1.png" />
       </div>
-      <div class="userName">Jane Cooper</div>
+      <div class="userName">{{userInfo.nick}}</div>
     </div>
-    <p class="postName">제목</p>
+    <p class="postName">{{post.Post.title}}</p>
+    {% if post.Post.img %}
     <img
-      src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bmF0dXJlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=600&q=60"
+      src="{{post.Post.img}}"
       alt="content_image"
       class="contentImage"
     />
+    {% endif %}
     <p class="content">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero doloribus modi
-      sequi qui voluptatibus reiciendis maxime nesciunt enim, praesentium vitae
-      rerum tempore iste, libero quas voluptatem dicta corporis rem expedita.
+      {{post.Post.content}}
     </p>
     <div class="comment">
       <svg
@@ -77,9 +81,11 @@
           fill="#676565"
         />
       </svg>
-      <p>29 comments</p>
+      <p>{{post.comment}}</p>
     </div>
   </div>
+  {% endfor %}
+  {% endif %}
 </div>
 <aside>
   <div id="sideBar">

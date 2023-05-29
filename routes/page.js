@@ -100,16 +100,19 @@ router.get("/post", isLoggedIn, async (req, res, next) => {
 
 router.get("/profile", isLoggedIn, async (req, res, next) => {
   try {
-    const posts = await Post.findAll({
-      include: {
-        model: User,
-        attributes: ["id", "nick"],
-      },
+    const userInfo = await User.findOne({
+      include: [
+        {
+          model: Post,
+          include: { model: Comment },
+        },
+        { model: Comment, include: { model: Post } },
+      ],
       where: {
-        UserId: req.user.id,
+        id: req.user.id,
       },
     });
-    res.render("profile", { posts });
+    res.render("profile", { userInfo });
   } catch (err) {
     next(err);
   }

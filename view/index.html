@@ -50,7 +50,7 @@
               />
             </svg>
           </button>
-          <p class="likeCount">{{post.likes}}</p>
+          <p id="likeCount_{{post.id}}">{{post.likes}}</p>
           <button class="dislikeButton" data-id="{{post.id}}">
             <svg
               class="dislikes"
@@ -77,7 +77,7 @@
               />
             </svg>
           </button>
-          <p class="dislikeCount">{{post.dislikes}}</p>
+          <p id="dislikeCount_{{post.id}}">{{post.dislikes}}</p>
           <div class="comment">
             <svg
               class="comment_icon"
@@ -111,22 +111,25 @@
   document.getElementById("writeForm").addEventListener("click", function () {
     window.location.href = "/post";
   });
-  const postId = document.querySelector(".likeButton").dataset.id;
-  document
-    .querySelector(".likeButton")
-    .addEventListener("click", async function () {
-      await axios.put("/post/likes", { postId }).then((res) => {
+  const likeButtons = document.querySelectorAll('.likeButton');
+  likeButtons.forEach((likeButton) => {
+    likeButton.addEventListener('click', async function(){
+      const postId = likeButton.dataset.id;
+      await axios.put('post/likes', {postId}).then((res) => {
         const like = res.data.likeCount.likes;
-        document.querySelector('.likeCount').textContent = like;
-      });
-    });
-  document
-    .querySelector(".dislikeButton")
-    .addEventListener("click", async function () {
-      await axios.put("/post/dislikes", { postId }).then((res) => {
+        document.getElementById(`likeCount_${postId}`).textContent = like;
+      })
+    })
+  })
+  const dislikeButtons = document.querySelectorAll('.dislikeButton');
+  dislikeButtons.forEach((dislikeButton) => {
+    dislikeButton.addEventListener('click', async function(){
+      const postId = dislikeButton.dataset.id;
+      await axios.put('post/dislikes', {postId}).then((res) => {
         const dislike = res.data.dislikeCount.dislikes;
-        document.querySelector('.dislikeCount').textContent = dislike;
-      });
-    });
+        document.getElementById(`dislikeCount_${postId}`).textContent = dislike;
+      })
+    })
+  })
 </script>
 {% endblock %}

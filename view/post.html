@@ -3,20 +3,15 @@
 {% endblock %} {% block content %}
 <h1>글 작성하기</h1>
 <hr />
-<form
-  id="write"
-  action="/post/{{post.id}}"
-  method="post"
-  enctype="multipart/form-data"
->
+<form id="write" action="/post" method="post" enctype="multipart/form-data">
   <label for="title">제목:</label>
   <input type="text" id="postTitle" name="title" required />
-
   <label for="content">내용:</label>
   <textarea id="content" name="content" rows="10" required></textarea>
   <img id="img-preview" src="" style="display: none" alt="미리보기" />
   <input id="img-url" type="hidden" name="url" />
-  <input type="file" id="img" name="img" accept="image/*" />
+  <input id="thumbnail-url" type="hidden" name="thumbnailUrl" />
+  <input type="file" id="img" accept="image/*" />
   <br />
   <input id="done" type="submit" value="작성하기" />
   <input id="cancel" type="button" value="취소" />
@@ -30,6 +25,7 @@
         document.getElementById("img-url").value = res.data.url;
         document.getElementById("img-preview").src = res.data.url;
         document.getElementById("img-preview").style.display = "inline";
+        document.getElementById("thumbnail-url").value = res.data.thumbnailUrl;
       });
     });
   }

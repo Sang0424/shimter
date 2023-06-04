@@ -38,6 +38,10 @@ sequelize
 app.use(morgan("dev"));
 app.use(express.static("public"));
 app.use("/img", express.static(path.join(__dirname, "uploads")));
+app.use(
+  "/thumbnails",
+  express.static(path.join(__dirname, "uploads/thumbnails"))
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(

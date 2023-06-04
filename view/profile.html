@@ -7,7 +7,12 @@
     <div id="noContent">작성한 글이 없습니다</div>
   {% else %}
     {% for post in userInfo.Posts %}
-    <div class="userContents">
+    <div>
+      <img src="{{post.thumbnail}}">
+      <p>{{post.title}}</p>
+      <p>{{post.createdAt}}</p>
+    </div>
+    <!-- <div class="userContents">
       <div class="userInfo">
         <div class="circle">
           <img src="https://img.icons8.com/ios-glyphs/30/null/user--v1.png" />
@@ -39,7 +44,7 @@
         </svg>
         <p>{{post.Comments.length}}</p>
       </div>
-    </div>
+    </div> -->
     {% endfor %}
   {% endif %}
 </div>

@@ -3,10 +3,15 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import Post from "../models/post.js";
+import sharp from "sharp";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 import User from "../models/user.js";
 import { format } from "date-fns";
 
 const router = express.Router();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 try {
   fs.readdirSync("uploads");
@@ -28,21 +33,34 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 router.post("/img", upload.single("img"), async (req, res, next) => {
-  res.json({ url: `/img/${req.file.filename}` });
-});
-router.post("/", upload.single("img"), async (req, res, next) => {
   try {
-    const { title, content } = req.body;
-    let img;
-    if (req.file) {
-      img = `/img/${req.file.filename}`;
-    } else {
-      img = null;
-    }
+    const thumbnailPath = path.join(
+      __dirname,
+      `../uploads/thumbnails/thumbnail_${req.file.filename}`
+    );
+    sharp(req.file.path) // 압축할 이미지 경로
+      .resize({ width: 100, height: 90 })
+      .withMetadata() // 이미지의 exif데이터 유지
+      .toFile(thumbnailPath);
+  } catch (err) {
+    console.log(err);
+  }
+  res.json({
+    url: `/img/${req.file.filename}`,
+    thumbnailUrl: `/thumbnails/thumbnail_${req.file.filename}`,
+  });
+});
+const upload2 = multer();
+router.post("/", upload2.none(), async (req, res, next) => {
+  try {
+    const { title, content, url, thumbnailUrl } = req.body;
+    const img = url || null;
+    const thumbnail = thumbnailUrl || null;
     const post = await Post.create({
       title,
       content,
       img,
+      thumbnail,
       UserId: req.user.id,
     });
     const postId = post.id;

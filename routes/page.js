@@ -5,6 +5,7 @@ import User from "../models/user.js";
 import Comment from "../models/comment.js";
 import { format, formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale/index.js";
+import sharp from "sharp";
 
 const router = express.Router();
 
@@ -112,7 +113,14 @@ router.get("/profile", isLoggedIn, async (req, res, next) => {
         id: req.user.id,
       },
     });
-    res.render("profile", { userInfo });
+    const thumbnail = await Post.findOne({
+      attributes: ["thumbnail"],
+      where: {
+        UserId: req.user.id,
+      },
+    });
+
+    res.render("profile", { userInfo, thumbnail });
   } catch (err) {
     next(err);
   }

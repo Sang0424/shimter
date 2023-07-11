@@ -3,19 +3,174 @@
 {% endblock %} {% block content %}
 <h1>글 작성하기</h1>
 <hr />
-<form id="write" action="/post" method="post" enctype="multipart/form-data">
+<form
+  id="write"
+  action="/post"
+  method="post"
+  onsubmit="return getContent()"
+  enctype="multipart/form-data"
+>
   <label for="title">제목:</label>
   <input type="text" id="postTitle" name="title" required />
+  <label>게시판</label>
+  <select id="tag" name="tag">
+    <option value="" disabled>Choose Tag</option>
+    <option value="rest">휴식</option>
+    <option value="healing">힐링</option>
+    <option value="smile">웃음</option>
+    <option value="praise">칭찬</option>
+  </select>
+
   <label for="content">내용:</label>
-  <textarea id="content" name="content" rows="10" required></textarea>
+  <textarea id="realContent" name="content" style="display: none"></textarea>
+  <div class="editor-menu">
+    <button id="btn-bold">
+      <b>B</b>
+    </button>
+    <button id="btn-italic">
+      <i>I</i>
+    </button>
+    <button id="btn-underline">
+      <u>U</u>
+    </button>
+    <button id="btn-strike">
+      <s>S</s>
+    </button>
+    <button id="btn-ordered-list">OL</button>
+    <button id="btn-unordered-list">UL</button>
+    <button id="btn-image">IMG</button>
+  </div>
+  <div contenteditable="true" id="content"></div>
   <img id="img-preview" src="" style="display: none" alt="미리보기" />
   <input id="img-url" type="hidden" name="url" />
   <input id="thumbnail-url" type="hidden" name="thumbnailUrl" />
   <input type="file" id="img" accept="image/*" />
+  <input type="file" id="img2" accept="image/*" />
   <br />
   <input id="done" type="submit" value="작성하기" />
   <input id="cancel" type="button" value="취소" />
 </form>
+<script>
+  const editor = document.getElementById("content");
+  const btnBold = document.getElementById("btn-bold");
+  const btnItalic = document.getElementById("btn-italic");
+  const btnUnderline = document.getElementById("btn-underline");
+  const btnStrike = document.getElementById("btn-strike");
+  const btnOrderedList = document.getElementById("btn-ordered-list");
+  const btnUnorderedList = document.getElementById("btn-unordered-list");
+  const btnImage = document.getElementById("btn-image");
+  const imageSelector = document.getElementById("img");
+
+  btnBold.addEventListener("click", function () {
+    event.preventDefault();
+    if (editor.style.fontWeight === "bold") {
+      editor.style.fontWeight = "normal";
+    } else {
+      editor.style.fontWeight = "bold";
+    }
+    focusEditor();
+  });
+
+  btnItalic.addEventListener("click", function () {
+    event.preventDefault();
+    if (editor.style.fontFamily === "italic") {
+      editor.style.fontFamily = "sans-serif";
+    } else {
+      editor.style.fontFamily = "italic";
+    }
+    focusEditor();
+  });
+
+  btnUnderline.addEventListener("click", function () {
+    event.preventDefault();
+    if (editor.style.textDecoration === "underline") {
+      editor.style.textDecoration = "none";
+    } else {
+      editor.style.textDecoration = "underline";
+    }
+    focusEditor();
+  });
+
+  btnStrike.addEventListener("click", function () {
+    event.preventDefault();
+    if (editor.style.textDecoration === "line-through") {
+      editor.style.textDecoration = "none";
+    } else {
+      editor.style.textDecoration = "line-through";
+    }
+    focusEditor();
+  });
+
+  btnOrderedList.addEventListener("click", function () {
+    event.preventDefault();
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const olElement = document.createElement("ol");
+    const liElement = document.createElement("li");
+    liElement.innerHTML = range.toString();
+    olElement.appendChild(liElement);
+    range.deleteContents();
+    range.insertNode(olElement);
+    range.collapse(false);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    focusEditor();
+  });
+
+  btnUnorderedList.addEventListener("click", function () {
+    event.preventDefault();
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const ulElement = document.createElement("ul");
+    const liElement = document.createElement("li");
+    liElement.innerHTML = range.toString();
+    ulElement.appendChild(liElement);
+    range.deleteContents();
+    range.insertNode(ulElement);
+    range.collapse(false);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    focusEditor();
+  });
+
+  // 버튼 클릭 시 에디터가 포커스를 잃기 때문에 다시 에디터에 포커스를 해줌
+  function focusEditor() {
+    editor.focus({ preventScroll: true });
+  }
+  btnImage.addEventListener("click", function () {
+    event.preventDefault();
+    imageSelector.click();
+  });
+  imageSelector.addEventListener("change", function (e) {
+    const files = e.target.files;
+    if (!!files) {
+      insertImageDate(files[0]);
+    }
+  });
+  function insertImageData(file) {
+    const reader = new FileReader();
+    reader.addEventListener("load", function (e) {
+      focusEditor();
+      const image = document.createElement("img");
+      image.src = reader.result;
+      insertNodeAtCaret(image);
+    });
+    reader.readAsDataURL(file);
+  }
+
+  function insertNodeAtCaret(node) {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(node);
+      range.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+    focusEditor();
+  }
+</script>
 <script>
   if (document.getElementById("img")) {
     document.getElementById("img").addEventListener("change", function (e) {
@@ -28,6 +183,10 @@
         document.getElementById("thumbnail-url").value = res.data.thumbnailUrl;
       });
     });
+  }
+  function getContent() {
+    document.getElementById("realContent").value =
+      document.getElementById("content").innerText;
   }
 </script>
 {% endblock %}

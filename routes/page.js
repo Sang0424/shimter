@@ -101,26 +101,30 @@ router.get("/post", isLoggedIn, async (req, res, next) => {
 
 router.get("/profile", isLoggedIn, async (req, res, next) => {
   try {
-    const userInfo = await User.findOne({
-      include: [
-        {
-          model: Post,
-          include: { model: Comment },
-        },
-        { model: Comment, include: { model: Post } },
-      ],
-      where: {
-        id: req.user.id,
-      },
+    const userPost = await Post.findAll({
+      include: { model: User },
+      where: { UserId: req.user.id },
     });
-    const thumbnail = await Post.findOne({
-      attributes: ["thumbnail"],
-      where: {
-        UserId: req.user.id,
-      },
+    function formatDate(date) {
+      const d = new Date(date);
+      const now = Date.now();
+      const diff = (now - d.getTime()) / 1000; // 현재 시간과의 차이(초)
+      if (diff < 60 * 1) {
+        // 1분 미만일땐 방금 전 표기
+        return "방금 전";
+      }
+      if (diff < 60 * 60 * 24 * 3) {
+        // 3일 미만일땐 시간차이 출력(몇시간 전, 몇일 전)
+        return formatDistanceToNow(d, { addSuffix: true, locale: ko });
+      }
+      return format(d, "PPP EEE p", { locale: ko }); // 날짜 포맷
+    }
+    const formattedPosts = userPost.map((post) => {
+      const formatPost = { ...post.dataValues };
+      formatPost.createdAt = formatDate(post.createdAt);
+      return formatPost;
     });
-
-    res.render("profile", { userInfo, thumbnail });
+    res.render("profile", { formattedPosts });
   } catch (err) {
     next(err);
   }

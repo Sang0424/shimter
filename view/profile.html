@@ -1,54 +1,25 @@
 {% extends 'layout.html' %} {% block styles %}
-<link rel="stylesheet" href="profile.css" />
+<link rel="stylesheet" href="profile2.css" />
 {% endblock %} {% block content%}
 <div id="myContent">
   <p>내가 쓴 글</p>
-  {% if not userInfo.Posts %}
-    <div id="noContent">작성한 글이 없습니다</div>
-  {% else %}
-    {% for post in userInfo.Posts %}
-    <div>
-      <img src="{{post.thumbnail}}">
-      <p>{{post.title}}</p>
-      <p>{{post.createdAt}}</p>
-    </div>
-    <!-- <div class="userContents">
-      <div class="userInfo">
-        <div class="circle">
-          <img src="https://img.icons8.com/ios-glyphs/30/null/user--v1.png" />
-        </div>
-        <div class="userName">{{userInfo.nick}}</div>
-      </div>
-      <p class="postName">{{post.title}}</p>
-      {% if post.img %}
-      <img
-        src="{{post.img}}"
-        alt="content_image"
-        class="contentImage"
-      />
-      {% endif %}
-      <p class="content">{{post.content}}</p>
-      <div class="comment">
-        <svg
-          class="comment_icon"
-          width="64"
-          height="105"
-          viewBox="0 0 128 105"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M25.6 63H102.4V52.5H25.6V63ZM25.6 47.25H102.4V36.75H25.6V47.25ZM25.6 31.5H102.4V21H25.6V31.5ZM128 105L102.4 84H12.8C9.28001 84 6.26561 82.971 3.75681 80.913C1.24801 78.855 -0.0042558 76.384 1.08659e-05 73.5V10.5C1.08659e-05 7.61251 1.25441 5.13976 3.76321 3.08176C6.27201 1.02376 9.28428 -0.00349109 12.8 8.91342e-06H115.2C118.72 8.91342e-06 121.734 1.02901 124.243 3.08701C126.752 5.14501 128.004 7.61601 128 10.5V105ZM12.8 10.5V73.5H107.68L115.2 79.6687V10.5H12.8Z"
-            fill="#676565"
-          />
-        </svg>
-        <p>{{post.Comments.length}}</p>
-      </div>
-    </div> -->
-    {% endfor %}
-  {% endif %}
+  {% if not formattedPosts %}
+  <div id="noContent">작성한 글이 없습니다</div>
+  {% else %} {% for post in formattedPosts %}
+  <div class="border">
+    {% if post.thumbnail %}
+    <img src="{{post.thumbnail}}" alt="thumbnail" class="thumbnail" />
+    {% else %}
+    <img src="../img/NoImage.jpg" alt="NoImage" class="thumbnail" />
+    {% endif %}
+    <p class="title">{{post.title}}</p>
+    <p class="nickname">{{post.User.nick}}</p>
+    <p class="content">{{post.content}}</p>
+    <p class="date">{{post.createdAt}}</p>
+  </div>
+  {% endfor %} {% endif %}
 </div>
-<div id="myComment">
+<!-- <div id="myComment">
   <p>내가 댓글 단 글</p>
   {% if not userInfo.Comments %}
     <div id="noContent">작성한 댓글이 없습니다</div>
@@ -91,14 +62,6 @@
   </div>
   {% endfor %}
   {% endif %}
-</div>
-<aside>
-  <div id="sideBar">
-    <div id="sideCircle">
-        <img src="https://img.icons8.com/ios-glyphs/30/null/user--v1.png" />
-      </div>
-      <div id="sideUserName">Jane Cooper</div>
-    </div>
-  </div>
-</aside>
+</div> -->
+
 {% endblock %}

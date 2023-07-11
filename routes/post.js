@@ -53,12 +53,13 @@ router.post("/img", upload.single("img"), async (req, res, next) => {
 const upload2 = multer();
 router.post("/", upload2.none(), async (req, res, next) => {
   try {
-    const { title, content, url, thumbnailUrl } = req.body;
+    const { title, content, tag, url, thumbnailUrl } = req.body;
     const img = url || null;
     const thumbnail = thumbnailUrl || null;
     const post = await Post.create({
       title,
       content,
+      tag,
       img,
       thumbnail,
       UserId: req.user.id,

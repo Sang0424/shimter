@@ -12,7 +12,11 @@ class Post extends Sequelize.Model {
         },
         content: {
           type: Sequelize.STRING(140),
-          allowNull: false,
+          allowNull: true,
+        },
+        tag: {
+          type: Sequelize.STRING(20),
+          allowNull: true,
         },
         img: {
           type: Sequelize.STRING(200),

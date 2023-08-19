@@ -1,0 +1,40 @@
+.login {
+  width: 330px;
+  margin-top: 15px;
+  form {
+    input {
+      &:first-child {
+        margin: 10px 0;
+      }
+      height: 30px;
+    }
+  }
+  button {
+    float: right;
+    position: relative;
+    height: 80px;
+    bottom: 45px;
+    right: 90px;
+    background-color: rgba(30, 182, 30, 0.5);
+    border: none;
+    box-shadow: inset;
+    border-radius: 5px;
+    font-weight: bold;
+    &:hover {
+      background-color: rgba(30, 182, 30, 0.7);
+      cursor: pointer;
+    }
+  }
+}
+
+.login_plus {
+  font-size: 12px;
+  margin-right: 10px;
+  margin-top: 10px;
+  & + & {
+    margin-left: 50px;
+  }
+  &:first-child:hover {
+    text-decoration: underline;
+  }
+}

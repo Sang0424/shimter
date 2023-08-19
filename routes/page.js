@@ -9,11 +9,6 @@ import sharp from "sharp";
 
 const router = express.Router();
 
-router.use((req, res, next) => {
-  res.locals.user = req.user;
-  next();
-});
-
 router.get("/", async (req, res, next) => {
   try {
     const posts = await Post.findAll({
@@ -47,7 +42,8 @@ router.get("/", async (req, res, next) => {
       formatPost.commentCount = post.Comments.length;
       return formatPost;
     });
-    res.render("index", { formatted });
+    //console.log(formatted);
+    res.send(formatted);
   } catch (err) {
     next(err);
   }

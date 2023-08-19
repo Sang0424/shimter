@@ -32,40 +32,52 @@ const upload = multer({
   }),
   limits: { fileSize: 5 * 1024 * 1024 },
 });
-router.post("/img", upload.single("img"), async (req, res, next) => {
+// router.post("/img", upload.single("img"), async (req, res, next) => {
+//   try {
+//     const thumbnailPath = path.join(
+//       __dirname,
+//       `../uploads/thumbnails/thumbnail_${req.file.filename}`
+//     );
+//     sharp(req.file.path) // 압축할 이미지 경로
+//       .resize({ width: 100, height: 90 })
+//       .withMetadata() // 이미지의 exif데이터 유지
+//       .toFile(thumbnailPath);
+//   } catch (err) {
+//     console.log(err);
+//   }
+//   res.json({
+//     thumbnailUrl: `/thumbnails/thumbnail_${req.file.filename}`,
+//   });
+// });
+// const upload2 = multer();
+
+router.post("/", upload.single("img"), async (req, res, next) => {
   try {
-    const thumbnailPath = path.join(
-      __dirname,
-      `../uploads/thumbnails/thumbnail_${req.file.filename}`
-    );
-    sharp(req.file.path) // 압축할 이미지 경로
-      .resize({ width: 100, height: 90 })
-      .withMetadata() // 이미지의 exif데이터 유지
-      .toFile(thumbnailPath);
-  } catch (err) {
-    console.log(err);
-  }
-  res.json({
-    url: `/img/${req.file.filename}`,
-    thumbnailUrl: `/thumbnails/thumbnail_${req.file.filename}`,
-  });
-});
-const upload2 = multer();
-router.post("/", upload2.none(), async (req, res, next) => {
-  try {
-    const { title, content, tag, url, thumbnailUrl } = req.body;
+    // const thumbnailPath = path.join(
+    //   __dirname,
+    //   `../uploads/thumbnails/thumbnail_${req.file.filename}`
+    // );
+    // sharp(req.file.path) // 압축할 이미지 경로
+    //   .resize({ width: 100, height: 90 })
+    //   .withMetadata() // 이미지의 exif데이터 유지
+    //   .toFile(thumbnailPath);
+    // const thumbnailUrl = `/thumbnails/thumbnail_${req.file.filename}`;
+    //console.log(req.file);
+    const url = `/img/${req.file.filename}`;
+    const { title, content, tag } = req.body;
+    //const { title, content, tag } = form;
     const img = url || null;
-    const thumbnail = thumbnailUrl || null;
-    const post = await Post.create({
+    //const thumbnail = thumbnailUrl || null;
+    const userId = req.user.id;
+    await Post.create({
       title,
       content,
       tag,
       img,
-      thumbnail,
-      UserId: req.user.id,
+      //thumbnail,
+      UserId: userId,
     });
-    const postId = post.id;
-    res.redirect(`/detail/${postId}`);
+    res.send("Success");
   } catch (error) {
     next(error);
   }

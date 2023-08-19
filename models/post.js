@@ -22,10 +22,10 @@ class Post extends Sequelize.Model {
           type: Sequelize.STRING(200),
           allowNull: true,
         },
-        thumbnail: {
-          type: Sequelize.STRING(),
-          allowNull: true,
-        },
+        //thumbnail: {
+        //type: Sequelize.STRING(),
+        //allowNull: true,
+        //},
         likes: {
           type: Sequelize.INTEGER(),
           allowNull: true,

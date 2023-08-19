@@ -12,7 +12,7 @@ router.post("/signup", isNotLoggedIn, async (req, res, next) => {
   try {
     const exUser = await User.findOne({ where: { email } });
     if (exUser) {
-      return res.redirect("/signup?error=exist");
+      return res.send("already exist");
     }
     const hash = await bcrypt.hash(password, 12);
     await User.create({
@@ -21,7 +21,7 @@ router.post("/signup", isNotLoggedIn, async (req, res, next) => {
       nick,
       password: hash,
     });
-    return res.redirect("/");
+    return res.send("success");
   } catch (error) {
     console.error(error);
     return next(error);
@@ -35,20 +35,25 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
       return next(authError);
     }
     if (!user) {
-      return res.redirect(`/?error=${info.message}`);
+      return res.send(`error=${info.message}`);
     }
     return req.login(user, (loginError) => {
       if (loginError) {
         console.log(loginError);
         return next(loginError);
       }
-      return res.redirect("/");
+      return res.status(200).json(user);
     });
   })(req, res, next);
 });
-router.get("/logout", isLoggedIn, (req, res) => {
-  req.logout(() => {
-    res.redirect("/");
+router.post("/logout", isLoggedIn, (req, res, next) => {
+  console.log("logout");
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.clearCookie("connect.sid");
+    res.send("logout");
   });
 });
 

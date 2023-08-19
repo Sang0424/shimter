@@ -11,7 +11,6 @@ router.post("/", async (req, res) => {
     PostId: postId,
     UserId: userId,
   });
-  res.redirect(`/detail/${postId}`);
 });
 
 export { router };

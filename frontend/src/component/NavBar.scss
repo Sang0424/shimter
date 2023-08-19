@@ -1,0 +1,28 @@
+nav {
+  ul {
+    display: flex;
+    background-color: rgba(70, 220, 67, 0.5);
+    opacity: 0.9;
+    margin-bottom: 100px;
+    li {
+      flex-grow: 1;
+      border-right: 1px solid gray;
+      a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        color: black;
+        font-weight: 1000;
+        height: 50px;
+        text-align: center;
+        &:hover {
+          background-color: rgba(70, 220, 67, 0.7);
+        }
+      }
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+}

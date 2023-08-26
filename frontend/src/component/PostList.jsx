@@ -1,20 +1,16 @@
-import Post from "./Post";
+import PostCard from "./PostCard";
 import "./PostList.scss";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-export const PostList = () => {
-  const user = useSelector((state) => {
-    return state.user.id > 0;
-  });
+export const PostList = ({ user }) => {
   //const navigate = useNavigate();
   const [boardList, setBoardList] = useState([]);
   useEffect(() => {
     const getBoardList = async () => {
       try {
-        const { data } = await axios.get("/api");
+        const { data } = await axios.get("/api/home");
         setBoardList(data);
       } catch (error) {
         console.error(error);
@@ -36,14 +32,17 @@ export const PostList = () => {
       )}
       <div className="container">
         {boardList.map((item) => (
-          <Post
+          <PostCard
             key={item.id}
+            id={item.id}
+            writer={item.User}
             title={item.title}
             content={item.content}
-            nick={item.User.nick}
             createdAt={item.createdAt}
             img={item.img}
-          ></Post>
+            comments={item.Comments}
+            user={user}
+          ></PostCard>
         ))}
       </div>
     </>

@@ -10,6 +10,10 @@ class Comment extends Sequelize.Model {
           type: Sequelize.STRING(140),
           allowNull: false,
         },
+        commenter: {
+          type: Sequelize.STRING(20),
+          allowNull: false,
+        },
       },
       {
         sequelize,

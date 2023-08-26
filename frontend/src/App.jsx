@@ -5,11 +5,8 @@ import SignUpPage from "./pages/SignUp";
 import WritePage from "./pages/Write";
 import PostDetail from "./pages/PostDetail";
 import { Route, Routes } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 
 function App() {
-  const location = useLocation();
-  console.log(location);
   return (
     <>
       <Header />
@@ -18,7 +15,7 @@ function App() {
         <Route path="signUP" element={<SignUpPage></SignUpPage>} />
         <Route path="/write" element={<WritePage></WritePage>} />
         <Route
-          path={`/post/${location.search}`}
+          path={`/detail/:postId`}
           element={<PostDetail></PostDetail>}
         ></Route>
       </Routes>

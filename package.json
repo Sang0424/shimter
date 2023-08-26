@@ -7,7 +7,7 @@
   "scripts": {
     "start": "nodemon app.js",
     "frontend": "cd frontend && npm run dev",
-    "dev": "concurrently \"npm start\" \"npm run frontend\""
+    "dev": "concurrently --kill-others-on-fail \"npm start\" \"npm run frontend\""
   },
   "author": "lee",
   "license": "ISC",

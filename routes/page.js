@@ -9,7 +9,7 @@ import sharp from "sharp";
 
 const router = express.Router();
 
-router.get("/", async (req, res, next) => {
+router.get("/home", async (req, res, next) => {
   try {
     const posts = await Post.findAll({
       include: [
@@ -53,7 +53,10 @@ router.get("/detail/:postId", async (req, res, next) => {
   try {
     const post = await Post.findOne({
       where: { id: req.params.postId },
-      include: [{ model: User, attributes: ["id", "nick"] }],
+      include: [
+        { model: User, attributes: ["id", "nick"] },
+        { model: Comment },
+      ],
     });
     if (!post) {
       return res.status(404).send("존재하지 않는 게시글입니다");
@@ -85,7 +88,10 @@ router.get("/detail/:postId", async (req, res, next) => {
     const amount = await Comment.count({
       where: { PostId: req.params.postId },
     });
-    res.render("detail", { formatted, comments, amount });
+    console.log(formatted);
+    console.log(comments);
+    console.log(amount);
+    res.send(formatted);
   } catch (err) {
     next(err);
   }

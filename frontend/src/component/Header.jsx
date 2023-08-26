@@ -12,7 +12,6 @@ const Header = () => {
   const user = useSelector((state) => {
     return state.user.id > 0;
   });
-  console.log(user);
   return (
     <div>
       <header>

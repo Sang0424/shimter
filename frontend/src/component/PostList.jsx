@@ -7,17 +7,21 @@ import { Link } from "react-router-dom";
 export const PostList = ({ user }) => {
   //const navigate = useNavigate();
   const [boardList, setBoardList] = useState([]);
+  const [reload, setReload] = useState(false);
   useEffect(() => {
     const getBoardList = async () => {
       try {
         const { data } = await axios.get("/api/home");
-        setBoardList(data);
+        setTimeout(() => {
+          setBoardList(data);
+        }, 0);
+        setReload(false);
       } catch (error) {
         console.error(error);
       }
     };
     getBoardList();
-  }, []);
+  }, [reload]);
   return (
     <>
       {user && (
@@ -41,7 +45,10 @@ export const PostList = ({ user }) => {
             createdAt={item.createdAt}
             img={item.img}
             comments={item.Comments}
+            likeCount={item.likes}
             user={user}
+            setReload={setReload}
+            isDetail={false}
           ></PostCard>
         ))}
       </div>

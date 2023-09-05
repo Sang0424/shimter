@@ -1,50 +1,44 @@
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState, useCallback } from "react";
 import axios from "axios";
-import "./Write.scss";
+import { useParams } from "react-router-dom";
 
-const WritePage = ({ user }) => {
+const EditPost = ({ user }) => {
   const navigate = useNavigate();
-  // const [form, setForm] = useState({
-  //   title: "",
-  //   content: "",
-  //   tag: "",
-  // });
+  const { postId } = useParams();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [files, setFiles] = useState([]);
+  const [file, setFile] = useState({
+    file: "",
+    url: "",
+  });
   const [tag, setTag] = useState("healing");
-  // const saveImage = (e) => {
-  //   e.preventDefault();
-  //   let reader = new FileReader();
-  //   const selectedFiles = Array.from(e.target.files); // 선택된 모든 파일을 배열로 변환
-  //   const previewUrls = [];
-
-  //   // 각 파일에 대한 미리보기 URL 생성
-  //   selectedFiles.forEach((file) => {
-  //     reader.readAsDataURL(file);
-  //     reader.onload = () => {
-  //       previewUrls.push(reader.result);
-  //       // 모든 미리보기 URL을 상태에 업데이트
-  //       if (previewUrls.length === selectedFiles.length) {
-  //         setFiles({
-  //           files: selectedFiles,
-  //           urls: previewUrls,
-  //         });
-  //       }
-  //     };
-  //   });
-  // };
-
-  const handleFileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    setFiles([...files, ...selectedFiles]);
+  const saveImage = (e) => {
+    e.preventDefault();
+    let reader = new FileReader();
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+    }
+    reader.onload = async () => {
+      setFile({
+        file: e.target.files[0],
+        url: reader.result,
+      });
+    };
   };
-  const handleRemoveFile = (indexToRemove) => {
-    const updatedFiles = files.filter((_, index) => index !== indexToRemove);
-    setFiles(updatedFiles);
-  };
-
+  useEffect(() => {
+    const loadPost = async () => {
+      const { data } = await axios.get(`/api/detail/${postId}`);
+      setTimeout(() => {
+        const { title, content, img, tag } = data;
+        setTitle(title);
+        setContent(content);
+        setFile({ file: "", url: img });
+        setTag(tag);
+      }, 0);
+    };
+    loadPost();
+  }, [postId]);
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
@@ -52,12 +46,11 @@ const WritePage = ({ user }) => {
         const formData = new FormData();
         formData.append("title", title);
         formData.append("content", content);
+        //formData.append("form", JSON.stringify(form));
+        formData.append("img", file.file);
         formData.append("tag", tag);
         formData.append("userId", user.id);
-        files.forEach((file) => {
-          formData.append("img", file);
-        });
-        const response = await axios.post("/api/post", formData);
+        const response = await axios.put(`/api/post/${postId}`, formData);
         if (response.data === "Success") {
           navigate("/");
         } else {
@@ -67,7 +60,7 @@ const WritePage = ({ user }) => {
         console.log(e);
       }
     },
-    [files, title, content, tag, user, navigate]
+    [file.file, title, content, tag, user, navigate]
   );
   return (
     <div className="contentWrapper">
@@ -83,6 +76,7 @@ const WritePage = ({ user }) => {
           type="text"
           className="title"
           name="title"
+          value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="제목을 입력하세요"
         ></input>
@@ -90,6 +84,7 @@ const WritePage = ({ user }) => {
         <select
           className="tag"
           name="tag"
+          value={tag}
           onChange={(e) => setTag(e.target.value)}
         >
           <option value="rest">휴식</option>
@@ -102,6 +97,7 @@ const WritePage = ({ user }) => {
           type="textarea"
           className="content"
           name="content"
+          value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="내용을 입력하세요"
         ></input>
@@ -110,20 +106,11 @@ const WritePage = ({ user }) => {
           type="file"
           className="img"
           accept="image/*"
-          multiple // 여러 파일 선택을 허용
-          onChange={handleFileChange}
+          onChange={saveImage}
         />
-        {files && (
+        {file.file && (
           <div className="preview">
-            {files.map((file, index) => (
-              <div key={index}>
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt={`previewImg-${index}`}
-                />
-                <button onClick={() => handleRemoveFile(index)}>삭제</button>
-              </div>
-            ))}
+            <img src={file.url} alt="previewImg"></img>
           </div>
         )}
         <br />
@@ -133,4 +120,5 @@ const WritePage = ({ user }) => {
     </div>
   );
 };
-export default WritePage;
+
+export default EditPost;

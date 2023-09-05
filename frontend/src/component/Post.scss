@@ -1,66 +1,73 @@
-// .contents {
-//   display: inline-block;
-//   border: 1px solid black;
-//   background-color: rgba(70, 220, 67, 0.2);
-//   width: 600px;
-//   padding: 30px;
-//   border-radius: 5px;
-//   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
-//   position: relative;
-//   margin-top: 20px;
-// }
-// .userInfo {
-//   display: flex;
-//   align-items: center;
-// }
-// .circle {
-//   margin: 5px 10px 0px 17px;
-//   width: 50px;
-//   height: 50px;
-//   border-radius: 50%;
-//   background-color: gray;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// }
-// .nickname {
-//   font-family: sans-serif;
-//   font-size: 24px;
-//   &:after {
-//     content: "\2807";
-//     font-size: 35px;
-//     position: absolute;
-//     right: 40px;
-//     top: 33px;
-//   }
-// }
-// .createdAt {
-//   margin-left: 50px;
-//   color: gray;
-//   opacity: 0.5;
-// }
-// .postName {
-//   font-weight: bold;
-//   font-size: 24px;
-//   margin: 20px 20px;
-// }
-// .contentImg {
-//   position: relative;
-//   left: 50%;
-//   transform: translate(-50%);
-//   width: 90%;
-//   border-radius: 10px;
-// }
-// .content {
-//   font-family: sans-serif;
-//   font-size: 24px;
-//   font-weight: 500;
-//   line-height: 30px;
-//   text-align: center;
-// }
 .MuiCard-root {
   width: 600px;
   padding: 20px;
   margin-top: 20px;
   margin-bottom: 10px;
+}
+.MuiCardMedia-root {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.carousel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 550px;
+  height: 500px;
+}
+.slide {
+  border-radius: 1%;
+  box-shadow: 0px 0px 1px #666;
+  width: 100%;
+  height: 100%;
+}
+
+.slide-hidden {
+  display: none;
+}
+
+.arrow {
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  color: white;
+  filter: drop-shadow(0px 0px 5px #555);
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.prevArrow {
+  left: 1rem;
+}
+
+.nextArrow {
+  right: 1rem;
+}
+
+.indicators {
+  display: flex;
+  position: absolute;
+  bottom: 1rem;
+}
+
+.indicator {
+  background-color: white;
+  height: 0.5rem;
+  width: 0.5rem;
+  outline: none;
+  border: none;
+  border-radius: 100%;
+  box-shadow: 0px 0px 5px #555;
+  margin: 0 0.2rem;
+  cursor: pointer;
+}
+
+.indicator-inactive {
+  background-color: gray;
 }

@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import User from "../models/user.js";
 import { format } from "date-fns";
+import { where } from "sequelize";
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -32,49 +33,22 @@ const upload = multer({
   }),
   limits: { fileSize: 5 * 1024 * 1024 },
 });
-// router.post("/img", upload.single("img"), async (req, res, next) => {
-//   try {
-//     const thumbnailPath = path.join(
-//       __dirname,
-//       `../uploads/thumbnails/thumbnail_${req.file.filename}`
-//     );
-//     sharp(req.file.path) // 압축할 이미지 경로
-//       .resize({ width: 100, height: 90 })
-//       .withMetadata() // 이미지의 exif데이터 유지
-//       .toFile(thumbnailPath);
-//   } catch (err) {
-//     console.log(err);
-//   }
-//   res.json({
-//     thumbnailUrl: `/thumbnails/thumbnail_${req.file.filename}`,
-//   });
-// });
-// const upload2 = multer();
 
-router.post("/", upload.single("img"), async (req, res, next) => {
+router.post("/", upload.array("img"), async (req, res, next) => {
   try {
-    // const thumbnailPath = path.join(
-    //   __dirname,
-    //   `../uploads/thumbnails/thumbnail_${req.file.filename}`
-    // );
-    // sharp(req.file.path) // 압축할 이미지 경로
-    //   .resize({ width: 100, height: 90 })
-    //   .withMetadata() // 이미지의 exif데이터 유지
-    //   .toFile(thumbnailPath);
-    // const thumbnailUrl = `/thumbnails/thumbnail_${req.file.filename}`;
-    //console.log(req.file);
-    const url = `/img/${req.file.filename}`;
-    const { title, content, tag } = req.body;
-    //const { title, content, tag } = form;
-    const img = url || null;
-    //const thumbnail = thumbnailUrl || null;
-    const userId = req.user.id;
+    let urls;
+    if (req.files) {
+      urls = req.files.map((file) => `/img/${file.filename}`).join(",");
+    } else {
+      urls = "";
+    }
+    const { title, content, tag, userId } = req.body;
+    const img = urls;
     await Post.create({
       title,
       content,
       tag,
       img,
-      //thumbnail,
       UserId: userId,
     });
     res.send("Success");
@@ -82,13 +56,50 @@ router.post("/", upload.single("img"), async (req, res, next) => {
     next(error);
   }
 });
-router.put("/likes", async (req, res) => {
-  const { postId } = req.body;
+router.put("/:postId", upload.single("img"), async (req, res, next) => {
+  const { postId } = req.params;
+  try {
+    let urls;
+    if (req.files) {
+      urls = req.files.map((file) => `/img/${file.filename}`).join(",");
+    } else {
+      urls = "";
+    }
+    const { title, content, tag } = req.body;
+    const img = urls;
+    await Post.update(
+      {
+        title: title,
+        content: content,
+        tag: tag,
+        img: img,
+      },
+      {
+        where: {
+          id: postId,
+        },
+      }
+    );
+    res.send("Success");
+  } catch (err) {
+    next(err);
+  }
+});
+router.delete("/:postId", async (req, res) => {
+  await Post.destroy({
+    where: {
+      id: req.params.postId,
+    },
+  });
+  res.send("Post deleted");
+});
+router.put("/likes/:postId", async (req, res) => {
+  const { postId } = req.params;
   await Post.increment("likes", { by: 1, where: { id: postId } });
   const likeCount = await Post.findOne({
     where: { id: postId },
   });
-  res.json({ likeCount: likeCount });
+  res.send(likeCount);
 });
 router.put("/dislikes", async (req, res) => {
   const { postId } = req.body;

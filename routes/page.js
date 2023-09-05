@@ -39,10 +39,10 @@ router.get("/home", async (req, res, next) => {
     const formatted = posts.map((post) => {
       const formatPost = { ...post.dataValues };
       formatPost.createdAt = formatDate(post.createdAt);
+      formatPost.img = post.img.split(",");
       formatPost.commentCount = post.Comments.length;
       return formatPost;
     });
-    //console.log(formatted);
     res.send(formatted);
   } catch (err) {
     next(err);
@@ -78,6 +78,7 @@ router.get("/detail/:postId", async (req, res, next) => {
     const formatted = {
       ...post.dataValues,
       createdAt: formatDate(post.createdAt),
+      img: !!post.img ? post.img.split(",") : [],
     };
     const comments = await Comment.findAll({
       where: { PostId: req.params.postId },
@@ -88,9 +89,6 @@ router.get("/detail/:postId", async (req, res, next) => {
     const amount = await Comment.count({
       where: { PostId: req.params.postId },
     });
-    console.log(formatted);
-    console.log(comments);
-    console.log(amount);
     res.send(formatted);
   } catch (err) {
     next(err);

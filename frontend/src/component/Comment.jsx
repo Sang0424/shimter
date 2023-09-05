@@ -3,7 +3,7 @@ import { useState, useCallback } from "react";
 import Avatar from "@mui/material/Avatar";
 import { red } from "@mui/material/colors";
 
-const CommentForm = ({ user, id }) => {
+const CommentForm = ({ user, id, setReload }) => {
   const [commentText, setCommentText] = useState("");
   const commenter = user.nick;
   const userId = user.id;
@@ -19,18 +19,20 @@ const CommentForm = ({ user, id }) => {
         commentForm.append("postId", postId);
         await axios
           .post("/api/comment", commentForm)
-          .then(() => location.reload());
+          .then(() => setReload(true))
+          .then(() => setCommentText(""));
       } catch (err) {
         console.log(err);
       }
     },
-    [commentText, userId, postId, commenter]
+    [commentText, userId, postId, commenter, setReload]
   );
   return (
     <form onSubmit={handleSubmitComment}>
       <input
         type="text"
         name="comment"
+        value={commentText}
         onChange={(e) => {
           setCommentText(e.target.value);
         }}
@@ -40,10 +42,12 @@ const CommentForm = ({ user, id }) => {
   );
 };
 
-const CommentList = ({ comments, user, id }) => {
+const CommentList = ({ comments, user, id, setReload }) => {
   return (
     <>
-      {user.id > 0 && <CommentForm user={user} id={id}></CommentForm>}
+      {user.id > 0 && (
+        <CommentForm user={user} id={id} setReload={setReload}></CommentForm>
+      )}
       <div>
         <ul>
           {comments.length > 0 &&

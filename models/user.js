@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import Post from "./post.js";
 import Comment from "./comment.js";
+//import Like from "./like.js";
 
 class User extends Sequelize.Model {
   static initiate(sequelize) {
@@ -39,6 +40,7 @@ class User extends Sequelize.Model {
   static associate() {
     User.hasMany(Post);
     User.hasMany(Comment);
+    //User.hasMany(Like);
   }
 }
 

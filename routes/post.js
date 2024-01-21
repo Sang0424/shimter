@@ -3,6 +3,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import Post from "../models/post.js";
+import { verifyToken } from "../middlewares/index.js";
 import sharp from "sharp";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -34,7 +35,7 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-router.post("/", upload.array("img"), async (req, res, next) => {
+router.post("/", verifyToken, upload.array("img"), async (req, res, next) => {
   try {
     let urls;
     if (req.files) {
@@ -42,16 +43,16 @@ router.post("/", upload.array("img"), async (req, res, next) => {
     } else {
       urls = "";
     }
-    const { title, content, tag, userId } = req.body;
+    const { title, content, tag } = req.body;
     const img = urls;
     await Post.create({
       title,
       content,
       tag,
       img,
-      UserId: userId,
+      UserId: req.user.id,
     });
-    res.send("Success");
+    res.json({ state: "Success" });
   } catch (error) {
     next(error);
   }

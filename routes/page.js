@@ -1,5 +1,5 @@
 import express from "express";
-import { isLoggedIn, isNotLoggedIn } from "../middlewares/index.js";
+import { verifyToken, isNotLoggedIn } from "../middlewares/index.js";
 import Post from "../models/post.js";
 import User from "../models/user.js";
 import Comment from "../models/comment.js";
@@ -95,11 +95,11 @@ router.get("/detail/:postId", async (req, res, next) => {
   }
 });
 
-router.get("/post", isLoggedIn, async (req, res, next) => {
+router.get("/post", verifyToken, async (req, res, next) => {
   res.render("post");
 });
 
-router.get("/profile", isLoggedIn, async (req, res, next) => {
+router.get("/profile", verifyToken, async (req, res, next) => {
   try {
     const userPost = await Post.findAll({
       include: { model: User },

@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useCallback } from "react";
-import axios from "axios";
+import instance from "../lib/axios.js";
 import "./Write.scss";
 
-const WritePage = ({ user }) => {
+const WritePage = () => {
   const navigate = useNavigate();
   // const [form, setForm] = useState({
   //   title: "",
@@ -53,21 +53,17 @@ const WritePage = ({ user }) => {
         formData.append("title", title);
         formData.append("content", content);
         formData.append("tag", tag);
-        formData.append("userId", user.id);
+        // formData.append("userId", user.id);
         files.forEach((file) => {
           formData.append("img", file);
         });
-        const response = await axios.post("/api/post", formData);
-        if (response.data === "Success") {
-          navigate("/");
-        } else {
-          console.log("Error while posting");
-        }
-      } catch (e) {
-        console.log(e);
+        await instance.post("/api/post", formData);
+        navigate("/");
+      } catch (err) {
+        console.log(err);
       }
     },
-    [files, title, content, tag, user, navigate]
+    [files, title, content, tag, navigate]
   );
   return (
     <div className="contentWrapper">

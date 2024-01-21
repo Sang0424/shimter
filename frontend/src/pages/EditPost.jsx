@@ -1,10 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import instance from "../lib/axios.js";
 import { useParams } from "react-router-dom";
 
 const EditPost = ({ user }) => {
-  const navigate = useNavigate();
   const { postId } = useParams();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -28,17 +26,17 @@ const EditPost = ({ user }) => {
   };
   useEffect(() => {
     const loadPost = async () => {
-      const { data } = await axios.get(`/api/detail/${postId}`);
+      const { data } = await instance.get(`/api/detail/${postId}`);
       setTimeout(() => {
         const { title, content, img, tag } = data;
         setTitle(title);
         setContent(content);
-        setFile({ file: "", url: img });
+        setFile({ ...file, url: img });
         setTag(tag);
       }, 0);
     };
     loadPost();
-  }, [postId]);
+  }, [postId, file]);
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
@@ -49,10 +47,9 @@ const EditPost = ({ user }) => {
         //formData.append("form", JSON.stringify(form));
         formData.append("img", file.file);
         formData.append("tag", tag);
-        formData.append("userId", user.id);
-        const response = await axios.put(`/api/post/${postId}`, formData);
+        const response = await instance.put(`/api/post/${postId}`, formData);
         if (response.data === "Success") {
-          navigate("/");
+          window.location.href = `/detail/:${postId}`;
         } else {
           console.log("Error while posting");
         }
@@ -60,7 +57,7 @@ const EditPost = ({ user }) => {
         console.log(e);
       }
     },
-    [file.file, title, content, tag, user, navigate]
+    [file.file, title, content, tag, postId]
   );
   return (
     <div className="contentWrapper">

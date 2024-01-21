@@ -1,17 +1,18 @@
 import Logo from "../assets/Logo.svg";
 import Login from "./Login";
 import NavBar from "./NavBar";
-import UserInfo from "./userInfo";
+import UserInfo from "./UserInfo";
+import jwtDecode from "jwt-decode";
 import "./Header.scss";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
+import { getCookie } from "../lib/Cookie";
 
-const Header = () => {
-  const user = useSelector((state) => {
-    return state.user.id > 0;
-  });
+const Header = ({ user }) => {
+  // const token = useSelector((state) => state.user.token);
+  // const user = token ? jwtDecode(token) : {};
   return (
     <div>
       <header>
@@ -26,7 +27,7 @@ const Header = () => {
             <FontAwesomeIcon icon={faMagnifyingGlass} />
           </button>
         </div>
-        {user ? <UserInfo></UserInfo> : <Login></Login>}
+        {user.id > 0 ? <UserInfo user={user}></UserInfo> : <Login></Login>}
       </header>
       <div>
         <NavBar></NavBar>

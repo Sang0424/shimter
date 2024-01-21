@@ -1,16 +1,15 @@
-import { React, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Login.scss";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setUser } from "../redux/user.js";
+import { useNavigate } from "react-router-dom";
+import { setUser } from "../redux/user";
+import { setCookie } from "../lib/Cookie.js";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("이메일 형식이 아닙니다")
@@ -30,12 +29,19 @@ const Login = () => {
           withCredentials: true,
         }
       );
-      dispatch(setUser(data));
-      setTimeout(() => {
-        navigate("/");
-      }, 0);
+      setCookie("accessToken", data.accessToken, {
+        expires: new Date(new Date().getTime() + 1 * 60000),
+        //httpOnly: true,
+      });
+      setCookie("refreshToken", data.refreshToken, {
+        expires: new Date(new Date().getTime() + 5 * 60000),
+        //httpOnly: true,
+      });
+      dispatch(setUser(data.userWithoutPwd));
+      location.reload();
+      //navigate("/");
     } catch (error) {
-      console.log(error.response.data);
+      console.log(error);
     }
   };
   return (

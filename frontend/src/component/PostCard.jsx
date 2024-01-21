@@ -119,7 +119,6 @@ export default function PostCard({
   const [expanded, setExpanded] = useState(false);
   const [slide, setSlide] = useState(0);
   const navigate = useNavigate();
-
   const serverUrl = import.meta.env.VITE_SERVER_URL;
   const imgSrc = img.map((aimg) => `${serverUrl}${aimg}`);
 
@@ -162,10 +161,12 @@ export default function PostCard({
         {img.join().length > 0 && (
           <CardMedia>
             <div className="carousel">
-              <ArrowBackIosIcon
-                className="arrow prevArrow"
-                onClick={prevSlide}
-              />
+              {slide !== 0 && (
+                <ArrowBackIosIcon
+                  className="arrow prevArrow"
+                  onClick={prevSlide}
+                />
+              )}
               {imgSrc.map((imgUrl, idx) => (
                 <img
                   key={imgUrl}
@@ -176,10 +177,12 @@ export default function PostCard({
                   onClick={handleDetailClick}
                 />
               ))}
-              <ArrowForwardIosIcon
-                className="arrow nextArrow"
-                onClick={nextSlide}
-              />
+              {slide !== imgSrc.length - 1 && (
+                <ArrowForwardIosIcon
+                  className="arrow nextArrow"
+                  onClick={nextSlide}
+                />
+              )}
               <span className="indicators">
                 {imgSrc.map((_, idx) => {
                   return (
@@ -236,7 +239,7 @@ export default function PostCard({
         )}
       </Card>
       {isDetail && (
-        <>
+        <div className="comments">
           <p>댓글</p>
           <CommentList
             comments={comments}
@@ -244,7 +247,7 @@ export default function PostCard({
             id={id}
             setReload={setReload}
           ></CommentList>
-        </>
+        </div>
       )}
     </div>
   );

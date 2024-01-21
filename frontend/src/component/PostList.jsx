@@ -3,6 +3,8 @@ import "./PostList.scss";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import Avatar from "@mui/material/Avatar";
+import { red } from "@mui/material/colors";
 
 export const PostList = ({ user }) => {
   //const navigate = useNavigate();
@@ -24,8 +26,11 @@ export const PostList = ({ user }) => {
   }, [reload]);
   return (
     <>
-      {user && (
+      {user.id > 0 && (
         <Link to="/write">
+          <Avatar sx={{ bgcolor: red[500] }} aria-label="user">
+            {user.nick}
+          </Avatar>
           <input
             className="writeForm"
             type="text"
@@ -34,24 +39,28 @@ export const PostList = ({ user }) => {
           ></input>
         </Link>
       )}
-      <div className="container">
-        {boardList.map((item) => (
-          <PostCard
-            key={item.id}
-            id={item.id}
-            writer={item.User}
-            title={item.title}
-            content={item.content}
-            createdAt={item.createdAt}
-            img={item.img}
-            comments={item.Comments}
-            likeCount={item.likes}
-            user={user}
-            setReload={setReload}
-            isDetail={false}
-          ></PostCard>
-        ))}
-      </div>
+      {boardList.length > 0 ? (
+        <div className="container">
+          {boardList.map((item) => (
+            <PostCard
+              key={item.id}
+              id={item.id}
+              writer={item.User}
+              title={item.title}
+              content={item.content}
+              createdAt={item.createdAt}
+              img={item.img}
+              comments={item.Comments}
+              likeCount={item.likes}
+              user={user}
+              setReload={setReload}
+              isDetail={false}
+            ></PostCard>
+          ))}
+        </div>
+      ) : (
+        <p>Loading</p>
+      )}
     </>
   );
 };

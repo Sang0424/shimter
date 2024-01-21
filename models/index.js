@@ -3,6 +3,7 @@ import configObj from "../config/config.json" assert { type: "json" };
 import User from "./user.js";
 import Post from "./post.js";
 import Comment from "./comment.js";
+//import Like from "./like.js";
 
 const env = process.env.NODE_ENV || "development";
 const config = configObj[env];
@@ -24,7 +25,9 @@ export const sequelize = new Sequelize.Sequelize(
 User.initiate(sequelize);
 Post.initiate(sequelize);
 Comment.initiate(sequelize);
+//Like.initiate(sequelize);
 
 User.associate();
 Post.associate();
 Comment.associate();
+//Like.associate();

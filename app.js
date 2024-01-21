@@ -56,22 +56,20 @@ app.use(
   })
 );
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 app.use("/api", routes);
 
-// app.use((req, res, next) => {
-//   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
-//   error.status = 404;
-//   next(error);
+//react앱 빌드 후 연동할 떄 사용
+// app.use(express.static(path.join(__dirname, './frontend/build')));
+// app.get('/', function (req, res) {
+//   res.sendFile(path.join(__dirname, './frontend/build/index.html'));
+// });
+//react에서 라우팅을 담당할 때 사용. 가장 하단에 놓아야 함
+// app.get('*', function (요청, 응답) {
+//   응답.sendFile(path.join(__dirname, '/react-project/build/index.html'));
 // });
 
-// app.use((err, req, res, next) => {
-//   res.locals.message = err.message;
-//   res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
-//   res.status(err.status || 500);
-//   res.render("error");
-// });
 app.listen(app.get("port"), () => {
   console.log(app.get("port"), "번 포트에서 대기 중");
 });
